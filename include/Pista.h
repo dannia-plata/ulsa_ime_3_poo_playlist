@@ -1,6 +1,5 @@
 // Interfaz de la clase Pista (clase base).
-// Datos comunes a cualquier cosa que se pueda reproducir.
-// Relación: una Pista TIENE una Duracion (composición).
+// Relación: una Pista TIENE UNA Duracion (composición).
 
 #ifndef PISTA_H
 #define PISTA_H
@@ -12,17 +11,17 @@
 class Pista {
 private:
     std::string titulo;
-    Duracion duracion;
+    Duracion duracion;   // composición: la Pista crea y destruye su Duracion
 
 public:
+    // Si el título viene vacío se guarda "Sin título".
     Pista(const std::string& titulo, int min, int seg);
 
-    std::string getTitulo() const;
-    Duracion getDuracion() const;
+    const std::string& getTitulo() const;
+    const Duracion& getDuracion() const;
+    void setTitulo(const std::string& nuevoTitulo);   // misma regla del título vacío
 
-    // TODO 2.2: declara  void setTitulo(const std::string& nuevoTitulo);
-
-    // TODO 2.3: declara  void mostrarInfo() const;
+    void mostrarInfo() const;   // "Título (m:ss)" sin salto de línea
 };
 
 #endif
