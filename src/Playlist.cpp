@@ -1,22 +1,53 @@
-// Implementación de la clase Playlist.
-
 #include "Playlist.h"
 
+#include <algorithm>
 #include <iostream>
 
-// TODO 4.1: implementa el constructor de Playlist.
+Playlist::Playlist(const std::string& nombre) : nombre(nombre) {}
 
-// TODO 4.2: implementa  bool Playlist::agregarCancion(Cancion* cancion)
-//   Devuelve false si el puntero es nullptr o si la canción ya está en la
-//   playlist; en otro caso la agrega y devuelve true.
+bool Playlist::agregarCancion(Cancion* cancion) {
+    if (cancion == nullptr) return false;
+    if (std::find(canciones.begin(), canciones.end(), cancion) != canciones.end()) {
+        return false;   // duplicada
+    }
+    canciones.push_back(cancion);
+    return true;
+}
 
-// TODO 4.3: implementa  bool Playlist::agregarPodcast(Podcast* podcast)
-//   Mismas reglas que agregarCancion.
+bool Playlist::agregarPodcast(Podcast* podcast) {
+    if (podcast == nullptr) return false;
+    if (std::find(podcasts.begin(), podcasts.end(), podcast) != podcasts.end()) {
+        return false;   // duplicado
+    }
+    podcasts.push_back(podcast);
+    return true;
+}
 
-// TODO 4.4: implementa  int Playlist::cantidadPistas() const
+const std::string& Playlist::getNombre() const { return nombre; }
 
-// TODO 4.5: implementa  Duracion Playlist::duracionTotal() const
-//   Suma los segundos de todas las pistas y devuelve una Duracion.
+int Playlist::cantidadPistas() const {
+    return static_cast<int>(canciones.size() + podcasts.size());
+}
 
-// TODO 4.6: implementa  void Playlist::mostrar() const
-//   Imprime el nombre, cada pista, la cantidad de pistas y la duración total.
+Duracion Playlist::duracionTotal() const {
+    int total = 0;
+    for (const Cancion* c : canciones) total += c->getDuracion().totalSegundos();
+    for (const Podcast* p : podcasts) total += p->getDuracion().totalSegundos();
+    return Duracion(0, total);   // el constructor normaliza a m:ss
+}
+
+void Playlist::mostrar() const {
+    std::cout << "=== Playlist: " << nombre << " (" << cantidadPistas()
+              << " pistas, total ";
+    duracionTotal().imprimir();
+    std::cout << ") ===\n";
+    int n = 1;
+    for (const Cancion* c : canciones) {
+        std::cout << n++ << ". ";
+        c->mostrar();
+    }
+    for (const Podcast* p : podcasts) {
+        std::cout << n++ << ". ";
+        p->mostrar();
+    }
+}
